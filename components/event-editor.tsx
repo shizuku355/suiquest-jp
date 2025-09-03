@@ -89,6 +89,7 @@ export function EventEditor({ event, onSuccess }: EventEditorProps) {
                 description: `トランザクション: ${result.digest.slice(0, 8)}...`,
               });
               
+              
               if (!isEditing) {
                 // Reset form for new events
                 setFormData({
@@ -214,6 +215,16 @@ export function EventEditor({ event, onSuccess }: EventEditorProps) {
               </div>
             </>
           )}
+
+          {/* Password Rule Info */}
+          <div className="bg-muted p-4 rounded-lg">
+            <h3 className="font-semibold mb-2 text-sm">📋 MINTパスワードルール</h3>
+            <div className="text-xs text-muted-foreground space-y-1">
+              <p>パスワード形式: <code className="bg-background px-1 rounded">イベント名（スペース除去）-2025</code></p>
+              <p>例: イベント名が「Sui Quest」→ パスワードは「SuiQuest-2025」</p>
+              <p className="text-amber-600">※ イベント参加者にこのパスワードを配布してください</p>
+            </div>
+          </div>
 
           <Button type="submit" disabled={isPending} className="w-full">
             {isPending 

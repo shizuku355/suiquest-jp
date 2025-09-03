@@ -6,9 +6,13 @@ import { AccountBalance } from '@/components/account-balance';
 import { Navigation } from '@/components/ui/navigation';
 import { StampCard } from '@/components/stamp-card';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { isAdmin } from '@/lib/constants';
+import Link from 'next/link';
 
 export default function CardPage() {
   const currentAccount = useCurrentAccount();
+  const isUserAdmin = isAdmin(currentAccount?.address);
 
   return (
     <div className="container mx-auto p-4 max-w-4xl">
@@ -36,6 +40,22 @@ export default function CardPage() {
         </Card>
       ) : (
         <StampCard />
+      )}
+      
+      {/* Admin Footer */}
+      {isUserAdmin && (
+        <div className="fixed bottom-4 right-4">
+          <Button
+            variant="outline"
+            size="sm"
+            asChild
+            className="text-xs bg-background/80 backdrop-blur-sm border-primary/20"
+          >
+            <Link href="/admin">
+              ⚙️ 管理
+            </Link>
+          </Button>
+        </div>
       )}
     </div>
   );

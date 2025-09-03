@@ -9,6 +9,7 @@ export interface Event {
   cap: number;
   minted: number;
   admin: string;
+  password?: string;  // フロントエンド専用（ローカルストレージ）
 }
 
 export interface PassNFT {

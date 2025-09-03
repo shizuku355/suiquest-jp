@@ -4,6 +4,9 @@ import { useState } from 'react';
 import { useCurrentAccount, useSignAndExecuteTransaction, useSuiClient } from '@mysten/dapp-kit';
 import { Transaction } from '@mysten/sui/transactions';
 import { Button } from './ui/button';
+import { Input } from './ui/input';
+import { Label } from './ui/label';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from './ui/dialog';
 import { toast } from 'sonner';
 import type { Event } from '@/lib/types';
 
@@ -16,12 +19,28 @@ export function MintButton({ event }: MintButtonProps) {
   const suiClient = useSuiClient();
   const { mutate: signAndExecute, isPending } = useSignAndExecuteTransaction();
   const [isMinting, setIsMinting] = useState(false);
+  const [password, setPassword] = useState('');
+  const [dialogOpen, setDialogOpen] = useState(false);
 
   const packageId = process.env.NEXT_PUBLIC_PACKAGE_ID;
   
   const handleMint = async () => {
     if (!currentAccount || !packageId) {
       toast.error('ウォレットが接続されていないか、コントラクトが設定されていません');
+      return;
+    }
+
+    // パスワードチェック
+    if (!password.trim()) {
+      toast.error('イベントパスワードを入力してください');
+      return;
+    }
+
+    // 固定ルールでパスワード検証
+    const expectedPassword = `${event.name.replace(/\s+/g, '')}-2025`;
+    
+    if (password.trim() !== expectedPassword) {
+      toast.error('パスワードが正しくありません');
       return;
     }
 
@@ -67,6 +86,10 @@ export function MintButton({ event }: MintButtonProps) {
               toast.success('スタンプをゲットしました！', {
                 description: `トランザクション: ${result.digest.slice(0, 8)}...`,
               });
+              
+              // ダイアログを閉じてパスワードをリセット
+              setDialogOpen(false);
+              setPassword('');
             } catch (error) {
               console.error('Transaction wait error:', error);
               toast.error('トランザクションの確認に失敗しました');
@@ -119,13 +142,53 @@ export function MintButton({ event }: MintButtonProps) {
   }
 
   return (
-    <Button
-      onClick={handleMint}
-      disabled={disabled}
-      size="lg"
-      className="w-full max-w-md text-lg py-6"
-    >
-      {buttonText}
-    </Button>
+    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      <DialogTrigger asChild>
+        <Button
+          disabled={disabled}
+          size="lg"
+          className="w-full max-w-md text-lg py-6"
+        >
+          {buttonText}
+        </Button>
+      </DialogTrigger>
+      
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>🎫 スタンプをゲット</DialogTitle>
+        </DialogHeader>
+        
+        <div className="space-y-4">
+          <p className="text-sm text-muted-foreground">
+            イベント参加者に配布されたパスワードを入力してください
+          </p>
+          
+          <div className="space-y-2">
+            <Label htmlFor="password">イベントパスワード</Label>
+            <Input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="イベントで配布されたパスワード"
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleMint();
+                }
+              }}
+            />
+          </div>
+          
+          
+          <Button 
+            onClick={handleMint} 
+            disabled={isMinting || isPending || !password.trim()}
+            className="w-full"
+          >
+            {isMinting || isPending ? 'ミント中...' : 'スタンプをゲット！'}
+          </Button>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }

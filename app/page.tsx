@@ -7,10 +7,14 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useEvents } from '@/lib/hooks';
+import { useCurrentAccount } from '@mysten/dapp-kit';
+import { isAdmin } from '@/lib/constants';
 import Link from 'next/link';
 
 export default function Home() {
   const { events, isLoading } = useEvents();
+  const currentAccount = useCurrentAccount();
+  const isUserAdmin = isAdmin(currentAccount?.address);
   
   return (
     <div className="container mx-auto p-4 max-w-4xl">
@@ -96,6 +100,22 @@ export default function Home() {
           </div>
         )}
       </div>
+      
+      {/* Admin Footer */}
+      {isUserAdmin && (
+        <div className="fixed bottom-4 right-4">
+          <Button
+            variant="outline"
+            size="sm"
+            asChild
+            className="text-xs bg-background/80 backdrop-blur-sm border-primary/20"
+          >
+            <Link href="/admin">
+              ⚙️ 管理
+            </Link>
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

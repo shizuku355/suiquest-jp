@@ -9,23 +9,23 @@ export function Navigation() {
   const pathname = usePathname();
 
   const navItems = [
-    { href: '/', label: 'イベント一覧', icon: '🎯' },
-    { href: '/card', label: 'Stamp Card', icon: '🎫' },
-    { href: '/admin', label: '管理', icon: '⚙️' },
+    { href: '/', label: 'イベント', icon: '🎯' },
+    { href: '/card', label: 'カード', icon: '🎫' },
   ];
 
   return (
     <Card className="p-4 mb-6">
-      <nav className="flex justify-center space-x-4">
+      <nav className="flex justify-center gap-2 sm:gap-4">
         {navItems.map((item) => (
           <Button
             key={item.href}
             variant={pathname === item.href ? 'default' : 'outline'}
             asChild
+            className="flex-1 sm:flex-none"
           >
             <Link href={item.href}>
-              <span className="mr-2">{item.icon}</span>
-              <span className={item.href === '/card' ? 'font-[family-name:var(--font-fredoka)]' : ''}>
+              <span className="mr-1 sm:mr-2">{item.icon}</span>
+              <span className={`text-sm sm:text-base ${item.href === '/card' ? 'font-[family-name:var(--font-fredoka)]' : ''}`}>
                 {item.label}
               </span>
             </Link>
