@@ -100,13 +100,17 @@ export function StampCard() {
                       {stamp.data?.objectId?.slice(0, 8)}...
                     </span>
                   </div>
-                  {content?.fields?.minted_at && (
-                    <div>
-                      <span className="font-medium">獲得日:</span>
-                      <span className="ml-2">
-                        {new Date(parseInt(content.fields.minted_at)).toLocaleDateString('ja-JP')}
-                      </span>
-                    </div>
+                  {content?.dataType === 'moveObject' && 'fields' in content && content.fields && (
+                    <>
+                      {(content.fields as { minted_at?: string }).minted_at && (
+                        <div>
+                          <span className="font-medium">獲得日:</span>
+                          <span className="ml-2">
+                            {new Date(parseInt((content.fields as { minted_at?: string }).minted_at || '0')).toLocaleDateString('ja-JP')}
+                          </span>
+                        </div>
+                      )}
+                    </>
                   )}
                 </div>
               </CardContent>

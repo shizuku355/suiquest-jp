@@ -97,7 +97,6 @@ export function MintButton({ event }: MintButtonProps) {
   }
 
   const now = Date.now();
-  const isActive = now >= event.startMs && now <= event.endMs;
   const isUpcoming = now < event.startMs;
   const isEnded = now > event.endMs;
   const isSoldOut = event.minted >= event.cap;
