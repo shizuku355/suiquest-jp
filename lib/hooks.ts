@@ -26,7 +26,7 @@ export function useEvents() {
     (eventCreatedEvents?.data || []).map((event) => {
       const eventData = event.parsedJson as { event_id?: string };
       return eventData?.event_id;
-    }).filter(Boolean)
+    }).filter((id): id is string => id !== undefined)
   )];
 
   // 各イベントIDからオブジェクトデータを取得
