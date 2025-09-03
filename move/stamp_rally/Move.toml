@@ -1,0 +1,9 @@
+[package]
+name = "stamp_rally"
+edition = "2024.beta"
+
+[dependencies]
+Sui = { git = "https://github.com/MystenLabs/sui.git", subdir = "crates/sui-framework/packages/sui-framework", rev = "mainnet-v1.38.4" }
+
+[addresses]
+stamp_rally = "0x0"

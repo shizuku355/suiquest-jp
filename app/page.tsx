@@ -1,103 +1,101 @@
-import Image from "next/image";
+'use client';
+
+import { ConnectedAccount } from '@/components/connected-account';
+import { AccountBalance } from '@/components/account-balance';
+import { Navigation } from '@/components/ui/navigation';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { useEvents } from '@/lib/hooks';
+import Link from 'next/link';
 
 export default function Home() {
+  const { events, isLoading } = useEvents();
+  
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="container mx-auto p-4 max-w-4xl">
+      <div className="text-center mb-8">
+        <div className="inline-block p-6 rounded-3xl bg-gradient-to-r from-[#04ecf0]/20 to-[#6af2f0]/20 mb-4">
+          <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-[#059dc0] to-[#04d4f0] bg-clip-text text-transparent font-[family-name:var(--font-fredoka)]">
+            🌊 SuiQuest JP
+          </h1>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        <p className="text-muted-foreground text-lg">Sui Japan Event スタンプラリー</p>
+      </div>
+
+      <ConnectedAccount />
+      <AccountBalance />
+      <Navigation />
+
+      <div className="space-y-6">
+        <h2 className="text-2xl font-bold">開催中・開催予定のイベント</h2>
+        
+        {isLoading ? (
+          <div className="text-center py-8">
+            <div className="animate-spin w-8 h-8 border-2 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+            <p>イベントを読み込み中...</p>
+          </div>
+        ) : events.length === 0 ? (
+          <Card>
+            <CardContent className="text-center py-8">
+              <div className="text-6xl mb-4">🎯</div>
+              <p className="text-lg mb-2">まだイベントがありません</p>
+              <p className="text-muted-foreground">管理者がイベントを作成すると、ここに表示されます</p>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="grid gap-4 md:grid-cols-2">
+            {events.map((event) => {
+            const now = Date.now();
+            const isActive = now >= event.startMs && now <= event.endMs;
+            const isUpcoming = now < event.startMs;
+            
+            return (
+              <Card key={event.id} className="overflow-hidden hover:shadow-lg transition-all duration-300 border-2 hover:border-primary/50">
+                {event.imageUrl ? (
+                  <div className="aspect-square relative">
+                    <img 
+                      src={event.imageUrl} 
+                      alt={event.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ) : (
+                  <div className="aspect-square bg-gradient-to-br from-[#04ecf0] to-[#059dc0] flex items-center justify-center text-white text-lg font-bold shadow-inner">
+                    {event.name}
+                  </div>
+                )}
+                <CardHeader>
+                  <div className="flex justify-between items-start">
+                    <CardTitle className="text-lg">{event.name}</CardTitle>
+                    <Badge variant={isActive ? 'default' : isUpcoming ? 'secondary' : 'outline'}>
+                      {isActive ? '開催中' : isUpcoming ? '開催予定' : '終了'}
+                    </Badge>
+                  </div>
+                  <p className="text-sm text-muted-foreground">{event.description}</p>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex justify-between items-center mb-4">
+                    <span className="text-sm">
+                      {event.minted} / {event.cap} 発行済み
+                    </span>
+                    <div className="text-xs text-muted-foreground">
+                      {new Date(event.startMs).toLocaleDateString('ja-JP')} - {new Date(event.endMs).toLocaleDateString('ja-JP')}
+                    </div>
+                  </div>
+                  
+                  <Button asChild className="w-full">
+                    <Link href={`/events/${event.slug}`}>
+                      詳細を見る
+                    </Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            );
+            })}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
