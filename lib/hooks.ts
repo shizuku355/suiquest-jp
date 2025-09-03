@@ -24,7 +24,7 @@ export function useEvents() {
   // イベントIDのリストを作成（重複を除去）
   const allEventIds = [...new Set(
     (eventCreatedEvents?.data || []).map((event) => {
-      const eventData = event.parsedJson as any;
+      const eventData = event.parsedJson as { event_id?: string };
       return eventData?.event_id;
     }).filter(Boolean)
   )];
@@ -46,7 +46,17 @@ export function useEvents() {
   const events: Event[] = (eventObjects || []).map((obj) => {
     const content = obj.data?.content;
     if (content?.dataType === 'moveObject' && content.fields) {
-      const fields = content.fields as any;
+      const fields = content.fields as {
+        name?: string;
+        slug?: string;
+        description?: string;
+        image_url?: string;
+        start_ms?: string;
+        end_ms?: string;
+        cap?: string;
+        minted?: string;
+        admin?: string;
+      };
       return {
         id: obj.data?.objectId || '',
         name: fields.name || '',
